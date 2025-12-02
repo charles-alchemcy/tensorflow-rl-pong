@@ -10,6 +10,7 @@ and the associated code
 
 from __future__ import print_function
 
+
 import argparse
 import pickle
 import numpy as np
@@ -18,13 +19,13 @@ import gym
 from policy_network import Network
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--hidden_layer_size', type=int, default=200)
-parser.add_argument('--learning_rate', type=float, default=0.0005)
-parser.add_argument('--batch_size_episodes', type=int, default=1)
-parser.add_argument('--checkpoint_every_n_episodes', type=int, default=10)
-parser.add_argument('--load_checkpoint', action='store_true')
-parser.add_argument('--discount_factor', type=int, default=0.99)
-parser.add_argument('--render', action='store_true')
+parser.add_argument("--hidden_layer_size", type=int, default=200)
+parser.add_argument("--learning_rate", type=float, default=0.0005)
+parser.add_argument("--batch_size_episodes", type=int, default=1)
+parser.add_argument("--checkpoint_every_n_episodes", type=int, default=10)
+parser.add_argument("--load_checkpoint", action="store_true")
+parser.add_argument("--discount_factor", type=int, default=0.99)
+parser.add_argument("--render", action="store_true")
 args = parser.parse_args()
 
 # Action values to send to gym environment to move paddle up/down
@@ -36,7 +37,7 @@ action_dict = {DOWN_ACTION: 0, UP_ACTION: 1}
 
 # From Andrej's code
 def prepro(I):
-    """ prepro 210x160x3 uint8 frame into 6400 (80x80) 1D float vector """
+    """prepro 210x160x3 uint8 frame into 6400 (80x80) 1D float vector"""
     I = I[35:195]  # crop
     I = I[::2, ::2, 0]  # downsample by factor of 2
     I[I == 144] = 0  # erase background (background type 1)
@@ -59,10 +60,12 @@ def discount_rewards(rewards, discount_factor):
         discounted_rewards[t] = discounted_reward_sum
     return discounted_rewards
 
-env = gym.make('Pong-v0')
+
+env = gym.make("Pong-v0")
 
 network = Network(
-    args.hidden_layer_size, args.learning_rate, checkpoints_dir='checkpoints')
+    args.hidden_layer_size, args.learning_rate, checkpoints_dir="checkpoints"
+)
 if args.load_checkpoint:
     network.load_checkpoint()
 
@@ -120,8 +123,10 @@ while True:
         smoothed_reward = episode_reward_sum
     else:
         smoothed_reward = smoothed_reward * 0.99 + episode_reward_sum * 0.01
-    print("Reward total was %.3f; discounted moving average of reward is %.3f" \
-        % (episode_reward_sum, smoothed_reward))
+    print(
+        "Reward total was %.3f; discounted moving average of reward is %.3f"
+        % (episode_reward_sum, smoothed_reward)
+    )
 
     if episode_n % args.batch_size_episodes == 0:
         states, actions, rewards = zip(*batch_state_action_reward_tuples)
