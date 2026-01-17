@@ -7,4 +7,3 @@ for log in *.log; do
         | awk '{print NR " " $0}' \
         > "${log%.log}.dat"
 done
-
